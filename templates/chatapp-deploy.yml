@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.Deployments.app_name }}
+spec:
+  replicas: {{ .Values.Deployments.app_replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.Deployments.app_name }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.Deployments.app_name }}
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: {{ .Values.Deployments.app_name }}
+        image: {{ .Values.Deployments.app_url }}
+        ports:
+        - containerPort: {{ .Values.Deployments.app_port }}
+        resources:
+          requests:
+            cpu: 30m
+          limits:
+            cpu: 100m
+        env:
+        - name: TITLE
+          value: "Welcome AKS Ingress chatapp"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.Service.app_name }}
+  labels:
+    run: {{ .Values.Service.app_name }}
+spec:
+  ports:
+  - port: {{ .Values.Service.app_svc }}
+    targetPort: {{ .Values.Service.app_target_port }}
+  selector:
+    app: {{ .Values.Service.app_name }}
+#  type: LoadBalancer  

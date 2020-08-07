@@ -1,0 +1,22 @@
+
+replicacount: 1
+Deployments:
+  app_name: chatapp
+  db_name: database1
+  app_namenodejs: nodejs
+  app_port: 8000
+  db_port: 5432
+  app_url: shashanksingh17/helmimages:chatapp_chat
+  db_url: shashanksingh17/helmimages:chatapp_database1
+  app_urlnodejs: shashanksingh17/nodejsapp:nodejs
+  vol_name: database1-volume
+  app_replicas: 1
+  db_replicas: 1
+
+Service:
+  app_name: chatapp
+  db_name: database1
+  app_namenodejs: nodejs
+  app_target_port: 8000
+  app_svc: 80
+  db_svc: 5432

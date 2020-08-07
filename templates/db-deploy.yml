@@ -1,0 +1,41 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: db-deploy
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.Deployments.db_name }}
+  replicas: {{ .Values.Deployments.db_replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.Deployments.db_name }}
+    spec:
+      containers:
+      - name: {{ .Values.Deployments.db_name }}
+        image: {{ .Values.Deployments.db_url }} 
+        env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: database-keys
+                  key: user
+
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: database-keys
+                  key: password
+
+            - name: POSTGRES_DB
+              value: dockerdb
+        ports:
+        - containerPort: {{ .Values.Deployments.db_port }} 
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: {{ .Values.Deployments.vol_name }}
+      volumes:
+      - name: {{ .Values.Deployments.vol_name }}
+        persistentVolumeClaim:
+          claimName: database1-claim

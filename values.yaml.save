@@ -1,0 +1,20 @@
+
+replicacount: 1
+Deployments:
+  app_name: chatapp
+  db_name: database1
+  app_port: 8000
+  db_port: 5432
+  app_url: shashanksingh17/source:chatapp_chat
+  db_url: shashanksingh17/source:chatapp_database1
+  vol_name: postgredb
+  app_replicas: 1
+  db_replicas: 1
+  vol_claim_req_storage: 5Gi
+
+Service:
+  app_name: chatapplication
+  db_name: database1
+  app_target_port: 8000
+  app_svc: 80
+  db_svc: 5432
